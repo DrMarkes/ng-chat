@@ -13,7 +13,7 @@ export class MessageComponent implements OnInit {
   userEmail: string;
   userName: string;
   messageContent: string;
-  timeStamp: Date = new Date();
+  timeStamp: string;
 
   constructor() { }
 

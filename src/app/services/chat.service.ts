@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
-import { Observable } from 'rxjs/Observable';
-import { AngularFireAuth } from 'angularfire2/auth';
+import {Injectable} from '@angular/core';
+import {AngularFireDatabase, AngularFireList} from 'angularfire2/database';
+import {Observable} from 'rxjs/Observable';
+import {AngularFireAuth} from 'angularfire2/auth';
 
-import { ChatMessage } from '../models/chat-message.model';
+import {ChatMessage} from '../models/chat-message.model';
 
 @Injectable()
 export class ChatService {
@@ -12,22 +12,21 @@ export class ChatService {
   private chatMessages: Observable<ChatMessage[]>;
   private username: Observable<string>;
 
-  constructor(
-    private db: AngularFireDatabase,
-    private afAuth: AngularFireAuth) {
+  constructor(private db: AngularFireDatabase,
+              private afAuth: AngularFireAuth) {
     this.afAuth.authState.subscribe(auth => {
-      if(auth !== undefined && auth !== null) {
+      if (auth !== undefined && auth !== null) {
         this.user = auth;
       }
     });
 
     this.chatMessagesRef = this.db.list<ChatMessage>(
       'messages',
-        ref => ref.limitToLast(25).orderByKey()
+      ref => ref.limitToLast(25).orderByKey()
     );
 
     this.chatMessages = this.chatMessagesRef.snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+      return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
     });
   }
 
@@ -44,18 +43,16 @@ export class ChatService {
     });
   }
 
-  private static getTimeStamp(): Date {
+  private static getTimeStamp(): string {
     const now = new Date();
-    // const date = now.getUTCFullYear() + '/' +
-    //   (now.getUTCMonth() + 1) + '/' +
-    //   now.getUTCDate();
-    // const time = now.getUTCHours() + ':' +
-    //   now.getUTCMinutes() + ':' +
-    //   now.getUTCSeconds();
-    //
-    // return (date + ' ' + time);
+    const date = now.getUTCFullYear() + '/' +
+      (now.getUTCMonth() + 1) + '/' +
+      now.getUTCDate();
+    const time = now.getUTCHours() + ':' +
+      now.getUTCMinutes() + ':' +
+      now.getUTCSeconds();
 
-    return now;
+    return (date + ' ' + time);
   }
 
   getMessages(): Observable<ChatMessage[]> {
